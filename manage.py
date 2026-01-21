@@ -3,9 +3,13 @@
 import os
 import sys
 
-
 def main():
     """Run administrative tasks."""
+    # Add the framework directory to sys.path so apps can be found
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    framework_dir = os.path.join(base_dir, 'framework')
+    sys.path.append(framework_dir)
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bookstore.settings')
     try:
         from django.core.management import execute_from_command_line

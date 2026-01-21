@@ -11,9 +11,17 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import sys
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR was pointing to the parent of the folder containing settings.py (i.e. 'bookstore/' folder originally)
+# Now settings.py is in framework/bookstore/settings.py
+# So parent is framework/bookstore, parent.parent is framework/
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Add BASE_DIR (framework/) to sys.path to ensure apps are found if not already added by manage.py
+sys.path.append(str(BASE_DIR))
 
 
 # Quick-start development settings - unsuitable for production
@@ -58,7 +66,7 @@ ROOT_URLCONF = 'bookstore.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'], # Adjusted to point to framework/templates
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,7 +87,10 @@ WSGI_APPLICATION = 'bookstore.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # DB at root or in framework? Requirements said separate clean dir, but we are doing in-place.
+        # Let's keep DB at root (Project Root / ..) or in framework.
+        # Original was at project root. framework/ is the new project root effectively.
+        'NAME': BASE_DIR.parent / 'db.sqlite3', 
     }
 }
 
