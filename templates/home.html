@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}BookStore - Your Online Book Shop{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-primary via-secondary to-blue-400 text-white overflow-hidden">
+    <div class="absolute inset-0 bg-black/10"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+                    Discover Your Next
+                    <span class="text-orange-300">Favorite Book</span>
+                </h1>
+                <p class="text-lg md:text-xl text-blue-100 max-w-xl">
+                    Explore thousands of books across all genres. From bestsellers to hidden gems, find your perfect read today.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="{% url 'book_list' %}" class="inline-flex items-center justify-center bg-cta hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/30 cursor-pointer">
+                        Browse Books
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                        </svg>
+                    </a>
+                    {% if not request.session.customer_id %}
+                    <a href="{% url 'register' %}" class="inline-flex items-center justify-center bg-white/20 hover:bg-white/30 backdrop-blur text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 cursor-pointer">
+                        Create Account
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="hidden lg:block">
+                <div class="relative">
+                    <div class="absolute -inset-4 bg-white/10 rounded-3xl blur-2xl"></div>
+                    <div class="relative bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white/20 rounded-xl p-4 space-y-2">
+                                <div class="w-full h-32 bg-gradient-to-br from-orange-400 to-red-500 rounded-lg"></div>
+                                <div class="h-3 bg-white/40 rounded w-3/4"></div>
+                                <div class="h-2 bg-white/30 rounded w-1/2"></div>
+                            </div>
+                            <div class="bg-white/20 rounded-xl p-4 space-y-2 mt-8">
+                                <div class="w-full h-32 bg-gradient-to-br from-green-400 to-teal-500 rounded-lg"></div>
+                                <div class="h-3 bg-white/40 rounded w-3/4"></div>
+                                <div class="h-2 bg-white/30 rounded w-1/2"></div>
+                            </div>
+                            <div class="bg-white/20 rounded-xl p-4 space-y-2 -mt-4">
+                                <div class="w-full h-32 bg-gradient-to-br from-purple-400 to-pink-500 rounded-lg"></div>
+                                <div class="h-3 bg-white/40 rounded w-3/4"></div>
+                                <div class="h-2 bg-white/30 rounded w-1/2"></div>
+                            </div>
+                            <div class="bg-white/20 rounded-xl p-4 space-y-2 mt-4">
+                                <div class="w-full h-32 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-lg"></div>
+                                <div class="h-3 bg-white/40 rounded w-3/4"></div>
+                                <div class="h-2 bg-white/30 rounded w-1/2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Wave decoration -->
+    <div class="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="#F8FAFC"/>
+        </svg>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="font-heading text-3xl md:text-4xl font-bold text-text mb-4">
+                Why Choose BookStore?
+            </h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                We provide the best shopping experience for book lovers
+            </p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer group">
+                <div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors duration-300">
+                    <svg class="w-7 h-7 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <h3 class="font-heading text-xl font-semibold text-text mb-3">
+                    Wide Selection
+                </h3>
+                <p class="text-gray-600">
+                    Thousands of books across all genres, from fiction to technical references.
+                </p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer group">
+                <div class="w-14 h-14 bg-cta/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-cta/20 transition-colors duration-300">
+                    <svg class="w-7 h-7 text-cta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                </div>
+                <h3 class="font-heading text-xl font-semibold text-text mb-3">
+                    Easy Shopping
+                </h3>
+                <p class="text-gray-600">
+                    Simple and intuitive cart system. Add books, manage quantities, checkout easily.
+                </p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer group">
+                <div class="w-14 h-14 bg-green-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-green-500/20 transition-colors duration-300">
+                    <svg class="w-7 h-7 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <h3 class="font-heading text-xl font-semibold text-text mb-3">
+                    Secure Account
+                </h3>
+                <p class="text-gray-600">
+                    Your personal information is safe with us. Secure login and data protection.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 lg:py-24 bg-gradient-to-r from-primary to-secondary">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="font-heading text-3xl md:text-4xl font-bold text-white mb-6">
+            Ready to Start Reading?
+        </h2>
+        <p class="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+            Join thousands of book lovers who have found their perfect reads through BookStore.
+        </p>
+        <a href="{% url 'book_list' %}" class="inline-flex items-center justify-center bg-white hover:bg-gray-100 text-primary px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 hover:shadow-lg cursor-pointer">
+            Explore Book Collection
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+        </a>
+    </div>
+</section>
+{% endblock %}
