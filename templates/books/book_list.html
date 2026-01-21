@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Books - BookStore{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="font-heading text-3xl md:text-4xl font-bold text-text">Book Collection</h1>
+        <p class="text-gray-600 mt-2">Discover amazing books from our catalog</p>
+    </div>
+    
+    {% if books %}
+    <!-- Books Grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for book in books %}
+        <a href="{% url 'book_detail' book.id %}" class="group bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden hover:shadow-xl hover:shadow-primary/10 transition-all duration-300 cursor-pointer">
+            <!-- Book Cover Placeholder -->
+            <div class="aspect-[3/4] bg-gradient-to-br from-primary via-secondary to-blue-400 relative overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <svg class="w-16 h-16 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                    <p class="text-white font-heading font-semibold text-sm line-clamp-2">{{ book.title }}</p>
+                </div>
+                <!-- Stock Badge -->
+                {% if book.is_in_stock %}
+                <div class="absolute top-3 right-3 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                    In Stock
+                </div>
+                {% else %}
+                <div class="absolute top-3 right-3 bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                    Out of Stock
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Book Info -->
+            <div class="p-4">
+                <h3 class="font-heading font-semibold text-text group-hover:text-primary transition-colors duration-200 line-clamp-1 mb-1">
+                    {{ book.title }}
+                </h3>
+                <p class="text-gray-500 text-sm mb-3">by {{ book.author }}</p>
+                <div class="flex items-center justify-between">
+                    <span class="font-heading font-bold text-xl text-cta">${{ book.price }}</span>
+                    <span class="text-gray-400 text-sm">{{ book.stock }} left</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="mt-12 flex justify-center">
+        <nav class="flex items-center space-x-2">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200 cursor-pointer">
+                Previous
+            </a>
+            {% endif %}
+            
+            <span class="px-4 py-2 bg-primary text-white rounded-lg font-medium">
+                {{ page_obj.number }}
+            </span>
+            
+            <span class="text-gray-500">of {{ page_obj.paginator.num_pages }}</span>
+            
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200 cursor-pointer">
+                Next
+            </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-16">
+        <div class="inline-flex items-center justify-center w-24 h-24 bg-gray-100 rounded-full mb-6">
+            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+        </div>
+        <h2 class="font-heading text-2xl font-bold text-text mb-2">No Books Available</h2>
+        <p class="text-gray-600 mb-6">Check back later for new arrivals!</p>
+        <a href="{% url 'home' %}" class="inline-flex items-center bg-primary hover:bg-blue-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 cursor-pointer">
+            Back to Home
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
