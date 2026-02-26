@@ -15,27 +15,36 @@
     <div class="lg:col-span-2 space-y-4">
       {% for item in items %}
       <div
-        class="bg-white rounded-xl shadow-lg shadow-gray-200/50 p-6 flex flex-col sm:flex-row gap-4"
+        class="bg-white rounded-xl shadow-lg shadow-gray-200/50 p-6 flex flex-col sm:flex-row gap-4 {% if item.is_on_sale %}border-2 border-red-200{% endif %}"
       >
         <!-- Book Cover -->
-        <div
-          class="w-24 h-32 flex-shrink-0 bg-gradient-to-br from-primary via-secondary to-blue-400 rounded-lg overflow-hidden"
-        >
-          <div class="w-full h-full flex items-center justify-center">
-            <svg
-              class="w-8 h-8 text-white/50"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
+        <div class="relative">
+          <div
+            class="w-24 h-32 flex-shrink-0 {% if item.is_on_sale %}bg-gradient-to-br from-red-400 via-pink-500 to-orange-400{% else %}bg-gradient-to-br from-primary via-secondary to-blue-400{% endif %} rounded-lg overflow-hidden"
+          >
+            <div class="w-full h-full flex items-center justify-center">
+              <svg
+                class="w-8 h-8 text-white/50"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                />
+              </svg>
+            </div>
           </div>
+          {% if item.is_on_sale %}
+          <div
+            class="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full"
+          >
+            -{{ item.get_discount_percentage }}%
+          </div>
+          {% endif %}
         </div>
 
         <!-- Book Info -->
@@ -50,9 +59,21 @@
               </a>
               <p class="text-gray-500 text-sm">by {{ item.book.author }}</p>
             </div>
-            <span class="font-heading font-bold text-xl text-cta"
-              >${{ item.book.price }}</span
-            >
+            <div class="text-right">
+              {% if item.is_on_sale %}
+              <span class="font-heading font-bold text-xl text-red-500"
+                >${{ item.get_unit_price }}</span
+              >
+              <br />
+              <span class="text-gray-400 text-sm line-through"
+                >${{ item.get_original_unit_price }}</span
+              >
+              {% else %}
+              <span class="font-heading font-bold text-xl text-cta"
+                >${{ item.get_unit_price }}</span
+              >
+              {% endif %}
+            </div>
           </div>
 
           <!-- Quantity & Actions -->
@@ -136,12 +157,20 @@
             </form>
 
             <!-- Subtotal -->
-            <span class="ml-auto text-gray-600">
-              Subtotal:
-              <span class="font-semibold text-text"
-                >${{ item.get_subtotal }}</span
-              >
-            </span>
+            <div class="ml-auto text-right">
+              <span class="text-gray-600">
+                Subtotal:
+                <span
+                  class="font-semibold {% if item.is_on_sale %}text-red-500{% else %}text-text{% endif %}"
+                  >${{ item.get_subtotal }}</span
+                >
+              </span>
+              {% if item.is_on_sale %}
+              <div class="text-xs text-green-600 font-medium">
+                You save ${{ item.get_savings }}
+              </div>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
@@ -160,8 +189,27 @@
         <div class="space-y-4 mb-6">
           <div class="flex justify-between text-gray-600">
             <span>Items ({{ cart.get_item_count }})</span>
-            <span>${{ cart.get_total }}</span>
+            <span>${{ cart.get_original_total }}</span>
           </div>
+
+          {% if cart.get_total_savings > 0 %}
+          <div
+            class="flex justify-between text-green-600 bg-green-50 -mx-6 px-6 py-3"
+          >
+            <span class="flex items-center">
+              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              Sale Savings
+            </span>
+            <span class="font-semibold">-${{ cart.get_total_savings }}</span>
+          </div>
+          {% endif %}
+
           <div class="flex justify-between text-gray-600">
             <span>Shipping</span>
             <span class="text-green-600">Free</span>
@@ -171,6 +219,14 @@
             <span>Total</span>
             <span class="text-cta">${{ cart.get_total }}</span>
           </div>
+
+          {% if cart.get_total_savings > 0 %}
+          <div
+            class="bg-gradient-to-r from-red-500 to-orange-500 text-white text-center py-2 px-4 rounded-lg text-sm font-semibold"
+          >
+            🎉 You're saving ${{ cart.get_total_savings }} on this order!
+          </div>
+          {% endif %}
         </div>
 
         <button
@@ -185,6 +241,32 @@
         >
           Continue Shopping
         </a>
+
+        <!-- Sale Reminder -->
+        {% if cart.get_total_savings > 0 %}
+        <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div class="flex items-start">
+            <svg
+              class="w-5 h-5 text-yellow-500 mt-0.5 mr-2 flex-shrink-0"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <div class="text-sm text-yellow-800">
+              <span class="font-semibold">Limited Time Offer!</span>
+              <p class="mt-1">
+                Some items in your cart are on sale. Complete your purchase
+                before the sale ends!
+              </p>
+            </div>
+          </div>
+        </div>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -234,6 +316,25 @@
         />
       </svg>
     </a>
+
+    <!-- Sale Banner for Empty Cart -->
+    <div class="mt-12">
+      <a
+        href="{% url 'sale_campaigns' %}"
+        class="inline-block bg-gradient-to-r from-red-500 via-pink-500 to-orange-500 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg hover:shadow-red-500/30 transition-all duration-200 cursor-pointer"
+      >
+        <span class="flex items-center">
+          <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          Check Out Our Sales!
+        </span>
+      </a>
+    </div>
   </div>
   {% endif %}
 </div>

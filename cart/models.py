@@ -21,9 +21,18 @@ class Cart(models.Model):
         return f"Cart #{self.id} - {self.customer.name}"
 
     def get_total(self):
-        """Calculate total price of all items in cart."""
+        """Calculate total price of all items in cart (using sale prices)."""
         total = sum(item.get_subtotal() for item in self.items.all())
         return total
+
+    def get_original_total(self):
+        """Calculate total price without any discounts."""
+        total = sum(item.get_original_subtotal() for item in self.items.all())
+        return total
+
+    def get_total_savings(self):
+        """Calculate total savings from sale prices."""
+        return self.get_original_total() - self.get_total()
 
     def get_item_count(self):
         """Get total number of items in cart."""
@@ -47,6 +56,30 @@ class CartItem(models.Model):
     def __str__(self):
         return f"{self.quantity}x {self.book.title}"
 
+    def get_unit_price(self):
+        """Get the unit price (sale price if on sale, otherwise original price)."""
+        return self.book.get_final_price()
+
+    def get_original_unit_price(self):
+        """Get the original unit price without discount."""
+        return self.book.price
+
     def get_subtotal(self):
-        """Calculate subtotal for this cart item."""
+        """Calculate subtotal for this cart item (using sale price)."""
+        return self.get_unit_price() * self.quantity
+
+    def get_original_subtotal(self):
+        """Calculate subtotal without any discounts."""
         return self.book.price * self.quantity
+
+    def get_savings(self):
+        """Calculate savings for this cart item."""
+        return self.get_original_subtotal() - self.get_subtotal()
+
+    def is_on_sale(self):
+        """Check if the book in this cart item is on sale."""
+        return self.book.is_on_sale()
+
+    def get_discount_percentage(self):
+        """Get the discount percentage if the book is on sale."""
+        return self.book.get_discount_percentage()

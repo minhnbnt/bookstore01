@@ -1,5 +1,7 @@
-{% extends 'base.html' %} {% block title %}{{ book.title }} - BookStore{%
-endblock %} {% block content %}
+{% extends 'base.html' %}
+{% block title %} {{ book.title }} - BookStore {% endblock %}
+
+{% block content %}
 <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
   <!-- Breadcrumb -->
   <nav class="mb-8">
@@ -27,23 +29,40 @@ endblock %} {% block content %}
   <!-- Book Details -->
   <div class="grid lg:grid-cols-2 gap-12">
     <!-- Book Cover -->
-    <div
-      class="aspect-[3/4] max-w-md mx-auto lg:mx-0 bg-gradient-to-br from-primary via-secondary to-blue-400 rounded-2xl shadow-2xl shadow-primary/20 overflow-hidden"
-    >
-      <div class="w-full h-full flex items-center justify-center">
-        <svg
-          class="w-32 h-32 text-white/50"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+    <div class="relative">
+      {% if book.is_on_sale %}
+      <!-- Sale Badge on Cover -->
+      <div
+        class="absolute top-4 left-4 z-10 bg-red-500 text-white font-bold px-4 py-2 rounded-full flex items-center shadow-lg animate-pulse"
+      >
+        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
           <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            fill-rule="evenodd"
+            d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+            clip-rule="evenodd"
           />
         </svg>
+        {{ book.get_discount_percentage }}% OFF
+      </div>
+      {% endif %}
+      <div
+        class="aspect-[3/4] max-w-md mx-auto lg:mx-0 bg-gradient-to-br from-primary via-secondary to-blue-400 rounded-2xl shadow-2xl shadow-primary/20 overflow-hidden"
+      >
+        <div class="w-full h-full flex items-center justify-center">
+          <svg
+            class="w-32 h-32 text-white/50"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            />
+          </svg>
+        </div>
       </div>
     </div>
 
@@ -58,11 +77,58 @@ endblock %} {% block content %}
         </p>
       </div>
 
-      <!-- Price -->
-      <div class="flex items-baseline space-x-3">
-        <span class="font-heading text-4xl font-bold text-cta"
-          >${{ book.price }}</span
+      <!-- Price Section -->
+      <div class="space-y-2">
+        {% if book.is_on_sale %}
+        <!-- Sale Campaign Info -->
+        <div
+          class="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-4 mb-4"
         >
+          <div class="flex items-center space-x-2 mb-2">
+            <svg
+              class="w-5 h-5 text-red-500"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5 2a2 2 0 00-2 2v14l3.5-2 3.5 2 3.5-2 3.5 2V4a2 2 0 00-2-2H5zm2.5 3a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm6.207.293a1 1 0 00-1.414 0l-6 6a1 1 0 101.414 1.414l6-6a1 1 0 000-1.414zM12.5 10a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <span class="font-semibold text-red-600"
+              >{{ active_campaign.name }}</span
+            >
+          </div>
+          <p class="text-sm text-gray-600">
+            Sale ends:
+            <span class="font-medium"
+              >{{ active_campaign.end_date|date:"M d, Y H:i" }}</span
+            >
+          </p>
+        </div>
+
+        <!-- Sale Price Display -->
+        <div class="flex items-baseline space-x-3">
+          <span class="font-heading text-4xl font-bold text-red-500"
+            >${{ book.get_final_price }}</span
+          >
+          <span class="text-2xl text-gray-400 line-through"
+            >${{ book.price }}</span
+          >
+          <span
+            class="bg-red-100 text-red-600 text-sm font-bold px-3 py-1 rounded-full"
+          >
+            Save ${{ book.price|add:book.get_final_price|stringformat:".2f" }}
+          </span>
+        </div>
+        {% else %}
+        <div class="flex items-baseline space-x-3">
+          <span class="font-heading text-4xl font-bold text-cta"
+            >${{ book.price }}</span
+          >
+        </div>
+        {% endif %}
       </div>
 
       <!-- Stock Status -->
@@ -169,9 +235,20 @@ endblock %} {% block content %}
         </div>
         <button
           type="submit"
-          class="flex-1 bg-cta hover:bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg hover:shadow-orange-500/30 cursor-pointer"
+          class="flex-1 {% if book.is_on_sale %}bg-red-500 hover:bg-red-600 hover:shadow-red-500/30{% else %}bg-cta hover:bg-orange-600 hover:shadow-orange-500/30{% endif %} text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:shadow-lg cursor-pointer"
         >
-          Add to Cart
+          {% if book.is_on_sale %}
+          <span class="flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Add to Cart - Sale Price!
+          </span>
+          {% else %} Add to Cart {% endif %}
         </button>
       </form>
       {% else %}
@@ -216,17 +293,130 @@ endblock %} {% block content %}
             <dd class="font-medium text-text">{{ book.author }}</dd>
           </div>
           <div>
-            <dt class="text-gray-500">Price</dt>
+            <dt class="text-gray-500">Original Price</dt>
             <dd class="font-medium text-text">${{ book.price }}</dd>
+          </div>
+          <div>
+            <dt class="text-gray-500">Current Price</dt>
+            <dd
+              class="font-medium {% if book.is_on_sale %}text-red-500{% else %}text-text{% endif %}"
+            >
+              ${{ book.get_final_price }} {% if book.is_on_sale %}
+              <span class="text-xs text-gray-500">(on sale)</span>
+              {% endif %}
+            </dd>
           </div>
           <div>
             <dt class="text-gray-500">Stock</dt>
             <dd class="font-medium text-text">{{ book.stock }} units</dd>
           </div>
+          {% if book.is_on_sale %}
+          <div>
+            <dt class="text-gray-500">Discount</dt>
+            <dd class="font-medium text-red-500">
+              {{ book.get_discount_percentage }}% OFF
+            </dd>
+          </div>
+          {% endif %}
         </dl>
       </div>
     </div>
   </div>
+
+  <!-- Related Books on Sale -->
+  {% if related_sale_books %}
+  <div class="mt-16">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-heading text-2xl font-bold text-text">
+        More Books on Sale
+      </h2>
+      <a
+        href="{% url 'sale_campaigns' %}"
+        class="text-primary hover:text-blue-700 font-medium cursor-pointer flex items-center"
+      >
+        View All Sales
+        <svg
+          class="w-5 h-5 ml-1"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 7l5 5m0 0l-5 5m5-5H6"
+          />
+        </svg>
+      </a>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {% for sale_book in related_sale_books %}
+      <a
+        href="{% url 'book_detail' sale_book.id %}"
+        class="group bg-white rounded-2xl shadow-lg shadow-gray-200/50 overflow-hidden hover:shadow-xl hover:shadow-red-500/10 transition-all duration-300 cursor-pointer relative"
+      >
+        <!-- Sale Badge -->
+        <div
+          class="absolute top-3 left-3 z-10 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center"
+        >
+          <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fill-rule="evenodd"
+              d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
+              clip-rule="evenodd"
+            />
+          </svg>
+          -{{ sale_book.get_discount_percentage }}%
+        </div>
+
+        <!-- Book Cover -->
+        <div
+          class="aspect-[3/4] bg-gradient-to-br from-red-400 via-pink-500 to-orange-400 relative overflow-hidden"
+        >
+          <div class="absolute inset-0 flex items-center justify-center">
+            <svg
+              class="w-12 h-12 text-white/50"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              />
+            </svg>
+          </div>
+          <div
+            class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4"
+          >
+            <p
+              class="text-white font-heading font-semibold text-sm line-clamp-2"
+            >
+              {{ sale_book.title }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Book Info -->
+        <div class="p-4">
+          <p class="text-gray-500 text-sm mb-2">by {{ sale_book.author }}</p>
+          <div class="flex items-center space-x-2">
+            <span class="font-heading font-bold text-lg text-red-500"
+              >${{ sale_book.get_final_price }}</span
+            >
+            <span class="text-gray-400 text-sm line-through"
+              >${{ sale_book.price }}</span
+            >
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
 
   <!-- Back Link -->
   <div class="mt-12">
