@@ -5,42 +5,78 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('accounts', '0001_initial'),
-        ('books', '0001_initial'),
+        ("accounts", "0001_initial"),
+        ("books", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Cart',
+            name="Cart",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='carts', to='accounts.customer')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "customer",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="carts",
+                        to="accounts.customer",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Cart',
-                'verbose_name_plural': 'Carts',
-                'db_table': 'carts',
+                "verbose_name": "Cart",
+                "verbose_name_plural": "Carts",
+                "db_table": "carts",
             },
         ),
         migrations.CreateModel(
-            name='CartItem',
+            name="CartItem",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.PositiveIntegerField(default=1)),
-                ('added_at', models.DateTimeField(auto_now_add=True)),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cart_items', to='books.book')),
-                ('cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='cart.cart')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.PositiveIntegerField(default=1)),
+                ("added_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "book",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="cart_items",
+                        to="books.book",
+                    ),
+                ),
+                (
+                    "cart",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="items",
+                        to="cart.cart",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Cart Item',
-                'verbose_name_plural': 'Cart Items',
-                'db_table': 'cart_items',
-                'unique_together': {('cart', 'book')},
+                "verbose_name": "Cart Item",
+                "verbose_name_plural": "Cart Items",
+                "db_table": "cart_items",
+                "unique_together": {("cart", "book")},
             },
         ),
     ]

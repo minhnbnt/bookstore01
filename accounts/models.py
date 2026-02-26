@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password, check_password
 
 class Customer(models.Model):
     """Customer entity: id, name, email, password."""
-    
+
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
@@ -12,9 +12,9 @@ class Customer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'customers'
-        verbose_name = 'Customer'
-        verbose_name_plural = 'Customers'
+        db_table = "customers"
+        verbose_name = "Customer"
+        verbose_name_plural = "Customers"
 
     def __str__(self):
         return self.name
